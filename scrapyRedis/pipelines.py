@@ -6,10 +6,12 @@
 
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
+from scrapy_redis.pipelines import RedisPipeline
 
 
-class ScrapyRedisPipeline:
-    def process_item(self, item, spider):
-
-
-        return item
+class ScrapyRedisPipeline(RedisPipeline):
+    pass
+    # def process_item(self, item, spider):
+    #
+    #
+    #     return item

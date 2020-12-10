@@ -1,20 +1,13 @@
 from scrapy.http import Request
 import scrapy
 from scrapyRedis.items import UrlItem
+from scrapy_redis.spiders import RedisSpider
 import re
 from urllib import parse
 
 
-class MyspiderSpider(scrapy.Spider):
+class MyspiderSpider(RedisSpider):
     name = 'mySpider'
-    allowed_domains = ['www.hao123.com']
-
-    def start_requests(self):
-        url = 'https://baike.baidu.com/item/XPath'
-        while True:
-            yield Request(url, dont_filter=True)
-            print(33333333)
-            break
 
     def parse(self, response):
 
