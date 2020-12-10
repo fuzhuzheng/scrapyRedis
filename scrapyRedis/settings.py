@@ -63,7 +63,7 @@ DOWNLOADER_MIDDLEWARES = {
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'scrapyRedis.pipelines.ScrapyredisPipeline': 300,
+   'scrapyRedis.pipelines.ScrapyRedisPipeline': 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

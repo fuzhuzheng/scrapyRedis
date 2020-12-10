@@ -8,6 +8,6 @@
 from itemadapter import ItemAdapter
 
 
-class ScrapyredisPipeline:
+class ScrapyRedisPipeline:
     def process_item(self, item, spider):
         return item
