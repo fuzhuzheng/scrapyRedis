@@ -9,6 +9,9 @@ from urllib import parse
 class mySpiderSpider(RedisSpider):
     name = 'mySpider'
 
+    def make_requests_from_url(self, url):
+        return Request(url, dont_filter=False)
+
     def parse(self, response):
 
         code = response.encoding

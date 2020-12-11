@@ -106,10 +106,10 @@ SCHEDULER_SERIALIZER = "scrapy_redis.picklecompat"
 SCHEDULER_PERSIST = True
 
 # Schedule requests using a priority queue. (default)
-# SCHEDULER_QUEUE_CLASS = 'scrapy_redis.queue.PriorityQueue'
+SCHEDULER_QUEUE_CLASS = 'scrapy_redis.queue.PriorityQueue'
 
 # Alternative queues.
-SCHEDULER_QUEUE_CLASS = 'scrapy_redis.queue.FifoQueue'
+# SCHEDULER_QUEUE_CLASS = 'scrapy_redis.queue.FifoQueue'
 # SCHEDULER_QUEUE_CLASS = 'scrapy_redis.queue.LifoQueue'
 
 # Max idle time to prevent the spider from being closed when distributed crawling.
