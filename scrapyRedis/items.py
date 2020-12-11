@@ -17,3 +17,14 @@ class UrlItem(scrapy.Item):
     title = scrapy.Field()
     text = scrapy.Field()
 
+
+class PageItem(scrapy.Item):
+    url = scrapy.Field()
+    title = scrapy.Field()
+    keywords = scrapy.Field()
+    description = scrapy.Field()
+    body = scrapy.Field()
+    referer = scrapy.Field()
+    template = scrapy.Field()
+
+

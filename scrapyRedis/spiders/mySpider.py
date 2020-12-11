@@ -1,6 +1,6 @@
 from scrapy.http import Request
 import scrapy
-from scrapyRedis.items import UrlItem
+from scrapyRedis.items import UrlItem, PageItem
 from scrapy_redis.spiders import RedisSpider
 import re
 from urllib import parse
@@ -12,10 +12,19 @@ class mySpiderSpider(RedisSpider):
     def make_requests_from_url(self, url):
         return Request(url, dont_filter=False)
 
-    def parse(self, response):
+    def parse(self, response, **kwargs):
+        # 提取页面内容
+        yield PageItem(
+            url=response.url,
+            title=self.get_title(response),
+            keywords=self.get_keywords(response),
+            description=self.get_description(response),
+            body=self.get_body(response),
+            referer=self.get_referer(response),
+            template=''
+        )
 
-        code = response.encoding
-
+        # 提取页面A标签链接
         for a in self.get_a(response):
             urls = {}
 
@@ -37,12 +46,25 @@ class mySpiderSpider(RedisSpider):
                 text=text
             )
 
-            # print(3)
-            # print(a.get())
-        pass
-
-    def get_urls(self, response):
-        return response.xpath("//a/@href").extract()
-
     def get_a(self, response):
         return response.xpath("//a")
+
+    def get_referer(self, response):
+        referer = response.request.headers.get('referer')
+        return referer.decode('UTF-8') if referer else ''
+
+    def get_title(self, response):
+        """获取标题信息"""
+        return response.xpath("//title/text()").get()
+
+    def get_keywords(self, response):
+        """信息获取关键字信息"""
+        return response.xpath("//meta[@name='keywords']/@content").get()
+
+    def get_description(self, response):
+        """获取描述信息"""
+        return response.xpath("//meta[@name='dription']/@content").get()
+
+    def get_body(self, response):
+        """获取描述信息"""
+        return response.xpath("//body").get()

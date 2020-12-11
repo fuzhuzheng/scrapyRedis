@@ -10,7 +10,10 @@ from scrapy_redis.pipelines import RedisPipeline
 
 
 class ScrapyRedisPipeline(RedisPipeline):
-    pass
+
+    def _process_item(self, item, spider):
+        print(item)
+        pass
     # def process_item(self, item, spider):
     #
     #

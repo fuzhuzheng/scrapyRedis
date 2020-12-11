@@ -8,7 +8,7 @@ redis = StrictRedis(host="172.18.0.2",
                     socket_connect_timeout=2,
                     decode_responses=True)
 
-redis.sadd("mySpider:start_urls", "https://www.sina.com.cn/")
+redis.sadd("mySpider:start_urls", "http://scho.cssn.cn/xr/")
 # t = True
 # while t:
 #     try:
