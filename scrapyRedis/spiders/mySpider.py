@@ -6,7 +6,7 @@ import re
 from urllib import parse
 
 
-class MyspiderSpider(RedisSpider):
+class mySpiderSpider(RedisSpider):
     name = 'mySpider'
 
     def parse(self, response):
@@ -34,7 +34,7 @@ class MyspiderSpider(RedisSpider):
                 text=text
             )
 
-            print(3)
+            # print(3)
             # print(a.get())
         pass
 

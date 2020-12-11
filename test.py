@@ -8,7 +8,7 @@ redis = StrictRedis(host="172.18.0.2",
                     socket_connect_timeout=2,
                     decode_responses=True)
 
-redis.lpush("mySpider:start_urls", "https://www.hao123.com")
+redis.sadd("mySpider:start_urls", "https://www.qq.com/")
 # t = True
 # while t:
 #     try:
@@ -18,10 +18,10 @@ redis.lpush("mySpider:start_urls", "https://www.hao123.com")
 #     except:
 #         t = False
 #
-# param = redis.llen("87zn:items")
+# param = redis.llen("mySpider:start_urls")
 #
 # print(param)
-#
+# #
 keys = redis.keys("*")
 
 print(keys)
