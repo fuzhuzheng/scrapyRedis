@@ -1,9 +1,12 @@
-from scrapy.http import Request
+from scrapy.http import Request, HtmlResponse
 import scrapy
-from scrapyRedis.items import UrlItem, PageItem
+from scrapyRedis.items import UrlItem, SitesItem
 from scrapy_redis.spiders import RedisSpider
 import re
 from urllib import parse
+
+
+# import urlparse
 
 
 class mySpiderSpider(RedisSpider):
@@ -12,39 +15,52 @@ class mySpiderSpider(RedisSpider):
     def make_requests_from_url(self, url):
         return Request(url, dont_filter=False)
 
+    def check_contain_chinese(self, check_str):
+        if not check_str:
+            return True
+
+        for ch in check_str:
+            if u'\u4e00' <= ch <= u'\u9fff':
+                return True
+        return False
+
     def parse(self, response, **kwargs):
+        title = self.get_title(response)
+
+        if not self.check_contain_chinese(title):
+            return None
+
         # 提取页面内容
-        yield PageItem(
+        yield SitesItem(
             url=response.url,
-            title=self.get_title(response),
+            title=title,
             keywords=self.get_keywords(response),
             description=self.get_description(response),
-            body=self.get_body(response),
-            referer=self.get_referer(response),
-            template=''
         )
 
+        urls = []
+        netlocs = []
         # 提取页面A标签链接
         for a in self.get_a(response):
-            urls = {}
 
             url = a.xpath('@href').get()
-            title = a.xpath('@title').get()
-            text = a.xpath('./text()').get()
 
             # 跳过"javascript"类URL
-            if url is None or re.match('(^javascript|^#)(.*)', url, re.I | re.S) is not None or url in urls:
+            if url is None or re.match('(^javascript|^#)(.*)', url, re.I | re.S) is not None:
                 continue
 
-            urls.setdefault(url, True)
-
             url = parse.urljoin(response.url, url)
+            url = parse.urlparse(url)
 
-            yield UrlItem(
-                url=url,
-                title=title,
-                text=text
-            )
+            if url.netloc in netlocs or url.scheme not in ['http', 'https']:
+                continue
+            netlocs.append(url.netloc)
+
+            url = '%s://%s/' % (url.scheme, url.netloc.strip())
+            urls.append(url)
+
+        for url in urls:
+            yield self.make_requests_from_url(url)
 
     def get_a(self, response):
         return response.xpath("//a")

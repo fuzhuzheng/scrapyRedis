@@ -8,7 +8,7 @@ redis = StrictRedis(host="172.18.0.2",
                     socket_connect_timeout=2,
                     decode_responses=True)
 
-redis.sadd("mySpider:start_urls", "http://scho.cssn.cn/xr/")
+# redis.sadd("mySpider:start_urls", "https://www.hao123.com/")
 # t = True
 # while t:
 #     try:
@@ -18,10 +18,41 @@ redis.sadd("mySpider:start_urls", "http://scho.cssn.cn/xr/")
 #     except:
 #         t = False
 #
-# param = redis.llen("mySpider:start_urls")
+# param = redis.spop("mySpider:start_urls")
 #
 # print(param)
-# #
+# param = redis.type("mySpider:requests")
+
+# print(param)
+
+
+# params = redis.smembers("mySpider:start_urls")
+# for param in params:
+#     # redis.spop("mySpider:start_urls")
+#     print(param)
+
+# params = redis.smembers("mySpider:dupefilter")
+# for param in range(10000):
+#     redis.spop("mySpider:dupefilter")
+# print(param)
+
+# params = redis.zcard("mySpider:requests")
+# params = redis.delete("mySpider:requests")
+#
+#     # redis.lpop("mySpider:requests")
+# print(len(params))
+
+import json, time
+
+i = 0
+while i < 10000000:
+    # time.sleep(2)
+    _, data = redis.brpop('dddddddddddd', 3600*36000)
+    data = json.loads(data)
+    print(data)
+
+    i += 1
+
 keys = redis.keys("*")
 
 print(keys)

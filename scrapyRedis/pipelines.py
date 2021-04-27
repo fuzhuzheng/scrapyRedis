@@ -7,14 +7,17 @@
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
 from scrapy_redis.pipelines import RedisPipeline
+import json
 
 
 class ScrapyRedisPipeline(RedisPipeline):
 
-    def _process_item(self, item, spider):
-        print(item)
-        pass
-    # def process_item(self, item, spider):
-    #
-    #
-    #     return item
+    def process_item(self, item, spider):
+        data = {
+            'url': item['url'],
+            'title': item['title'],
+            'keywords': item['keywords'],
+            'description': item['description'],
+        }
+        spider.server.lpush('dddddddddddd', json.dumps(data))
+        return item
