@@ -4,6 +4,7 @@ from scrapyRedis.items import UrlItem, SitesItem
 from scrapy_redis.spiders import RedisSpider
 import re
 from urllib import parse
+import json
 
 
 # import urlparse
@@ -11,6 +12,23 @@ from urllib import parse
 
 class mySpiderSpider(RedisSpider):
     name = 'mySpider'
+
+    domain_suffix_list = set()
+
+    def setup_redis(self, crawler=None):
+        super(mySpiderSpider, self).setup_redis(crawler=None)
+
+        if self.domain_suffix_list:
+            return
+
+        settings = self.server.get('spider_init_settings')
+
+        if not settings:
+            return
+
+        settings = json.loads(settings.decode('utf-8'))
+
+        self.domain_suffix_list = set(settings['domain_suffix_list'])
 
     def make_requests_from_url(self, url):
         return Request(url, dont_filter=False)
@@ -24,15 +42,36 @@ class mySpiderSpider(RedisSpider):
                 return True
         return False
 
-    def parse(self, response, **kwargs):
-        title = self.get_title(response)
+    def check_domain(self, domain):
+        # if domain in self.domain_suffix_list:
+        #     return True
 
+        domain = domain.strip('www.')
+
+        start = domain.find('.')
+        if start != -1 and domain[start + 1:] in self.domain_suffix_list:
+            return True
+
+        return False
+
+    def parse(self, response, **kwargs):
+
+        url = response.url
+        _url = parse.urlparse(url)
+
+        if '/' != _url.path:
+            return None
+
+        if not self.check_domain(_url.netloc):
+            return None
+
+        title = self.get_title(response)
         if not self.check_contain_chinese(title):
             return None
 
         # 提取页面内容
         yield SitesItem(
-            url=response.url,
+            url=url,
             title=title,
             keywords=self.get_keywords(response),
             description=self.get_description(response),
@@ -54,6 +93,10 @@ class mySpiderSpider(RedisSpider):
 
             if url.netloc in netlocs or url.scheme not in ['http', 'https']:
                 continue
+
+            if not self.check_domain(url.netloc):
+                continue
+
             netlocs.append(url.netloc)
 
             url = '%s://%s/' % (url.scheme, url.netloc.strip())
@@ -79,7 +122,7 @@ class mySpiderSpider(RedisSpider):
 
     def get_description(self, response):
         """获取描述信息"""
-        return response.xpath("//meta[@name='dription']/@content").get()
+        return response.xpath("//meta[@name='description']/@content").get()
 
     def get_body(self, response):
         """获取描述信息"""

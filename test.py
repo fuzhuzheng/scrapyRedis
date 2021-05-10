@@ -1,14 +1,18 @@
+import sys
+# reload(sys)
+# sys.setdefaultencoding('utf-8')
 from redis import StrictRedis
-
+#
 redis = StrictRedis(host="172.18.0.2",
                     port=6379,
                     password='83VvZw$*@#NE',
                     db=2,
                     socket_timeout=10,
                     socket_connect_timeout=2,
-                    decode_responses=True)
+                    # decode_responses=True
+                    )
 
-# redis.sadd("mySpider:start_urls", "https://www.hao123.com/")
+redis.sadd("mySpider:start_urls", "https://www.hao123.com/")
 # t = True
 # while t:
 #     try:
@@ -36,23 +40,32 @@ redis = StrictRedis(host="172.18.0.2",
 #     redis.spop("mySpider:dupefilter")
 # print(param)
 
-# params = redis.zcard("mySpider:requests")
+# params = redis.scard("mySpider:dupefilter")
+# params = redis.delete("mySpider:dupefilter")
 # params = redis.delete("mySpider:requests")
 #
 #     # redis.lpop("mySpider:requests")
 # print(len(params))
+# print(params)
 
-import json, time
+# import json, time
+#
+# i = 0
+# while i < 100:
+#     # time.sleep(2)
+#     _, data = redis.brpop('dddddddddddd', 3600*36000)
+#     data = json.loads(data)
+#     print(data)
+#
+#     i += 1
 
-i = 0
-while i < 10000000:
-    # time.sleep(2)
-    _, data = redis.brpop('dddddddddddd', 3600*36000)
-    data = json.loads(data)
-    print(data)
+import json
+# data = redis.get(':1:spider_init_settings')
+# # data = bytes(data).decode(encoding='utf-8')
+# print(data.decode('utf-8'))
+#
+# keys = redis.keys("*")
+#
+# print(keys)
 
-    i += 1
 
-keys = redis.keys("*")
-
-print(keys)
