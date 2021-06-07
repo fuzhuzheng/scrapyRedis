@@ -13,6 +13,8 @@ redis = StrictRedis(host="172.18.0.2",
                     )
 
 redis.sadd("mySpider:start_urls", "https://www.hao123.com/")
+# redis.sadd("mySpider:start_urls", "https://www.aimitop.com/")
+
 # t = True
 # while t:
 #     try:
